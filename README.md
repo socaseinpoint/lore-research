@@ -31,6 +31,7 @@ No buried product: question and answer stay together.
 | `web` | search | exa + native search; tiered anti-bot fetch (Firecrawl stealth, Playwright); primary sources |
 | `youtube` | search | transcripts via exa; one subagent per video; flags visual-only content |
 | `files` | given-source | your PDFs / books / notes / local KB; cite `file:page`; no discovery step |
+| `deep-research` | wrapper | delegates web fan-out to Claude Code's built-in `/deep-research`, then runs lore's adversarial verify on top (which the built-in lacks) |
 
 Add a channel by dropping a `channels/<name>.md` that satisfies `core/channel-contract.md`.
 
@@ -41,19 +42,24 @@ multi-vote verify, completeness critic). Depth scales fan-out, sources, and veri
 
 ## Layout
 
+The skill is **self-contained** — everything lives under one directory, so symlinking it
+carries the whole tool:
+
 ```
-core/
-  principles.md         # the loop, fan-out calibration, tiered fetch, 10 hard rules, depth
-  channel-contract.md   # the schema every channel must satisfy
-channels/
-  web.md  youtube.md  files.md  _template.md
-.claude/skills/lore/SKILL.md   # the /lore dispatcher
+.claude/skills/lore/
+  SKILL.md                # the /lore dispatcher (flow: scope → channels → depth → fan-out → verify → synth)
+  core/
+    principles.md         # the loop, fan-out calibration, tiered fetch, 10 hard rules, depth
+    channel-contract.md   # the schema every channel must satisfy
+  channels/
+    web.md  youtube.md  files.md  deep-research.md  _template.md
 ```
 
 ## Install
 
 The skill auto-loads when Claude Code runs inside this repo. To use `/lore` from **any**
-project, symlink the skill into your user skills dir:
+project, symlink the self-contained skill dir into your user skills dir (it carries core/ +
+channels/ with it):
 
 ```bash
 ln -s "$(pwd)/.claude/skills/lore" ~/.claude/skills/lore

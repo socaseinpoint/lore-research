@@ -63,6 +63,10 @@ picks one per run; it scales fan-out, sources, verification, and synthesis lengt
   `deep` = more subagents via the skill; route to Workflow later (v2).
 - Always honor the hard rules regardless of depth; quick trades breadth for speed, NOT rigor —
   a quick answer still cites its source and still fails loudly on a blocked fetch.
+- deep's "≥2 perspectives per load-bearing claim": independent cross-channel corroboration
+  (web AND youtube confirming a claim from independent sources) counts as one perspective, so
+  one dedicated adversarial reviewer on top meets the bar. A claim resting on a SINGLE source /
+  single channel gets a dedicated 2nd reviewer regardless — no cross-channel angle to lean on.
 
 ## Decisions
 

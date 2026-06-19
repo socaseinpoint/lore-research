@@ -15,9 +15,10 @@ Promotion to a durable knowledge shelf (e.g. a `lore/` doc) is **optional and us
 the user decides whether to lift the answer out and where it should land. By default the
 answer just lives in its arc.
 
-Find the tool's home (this repo) to read `core/principles.md`, `core/channel-contract.md`,
-`channels/*.md`. If invoked from another project, those live where the `lore` skill source
-is installed — read them there.
+**Tool files live in THIS skill's base directory** (the dir holding this SKILL.md), regardless
+of which project you invoke from: `core/principles.md`, `core/channel-contract.md`,
+`channels/*.md`. Read them from there directly — do not go hunting one level up or resolving
+symlink targets; the skill is self-contained.
 
 ## Flow
 
@@ -25,21 +26,27 @@ is installed — read them there.
 Take the topic from `$ARGUMENTS`, or ask for it. Write a one-paragraph brief + explicit
 sub-questions. (core/principles.md → Loop.)
 
-### 2. Pick channels (INTERACTIVE)
-Read each `channels/*.md` `name / when-to-use` line. Present the available channels and flag
-which fit this topic. Ask the user to pick 1+ (use AskUserQuestion). Never auto-decide — the
-user chooses where to search.
+### 2. Pick channels (ask only if not already provided)
+**If channels are already supplied** (in `$ARGUMENTS` or by the upstream caller/orchestrator),
+use them — do NOT re-prompt. Otherwise: read each `channels/*.md` `name / when-to-use` line,
+present the available channels flagging which fit this topic, and ask the user to pick 1+ (use
+AskUserQuestion). Never silently auto-decide when nothing was provided.
 
-Channels are of two kinds (a channel states which via its `discover` section):
-- **search channels** (`web`, `youtube`) — the tool discovers sources.
+Channels are of three kinds (a channel states which via its `discover` section):
+- **search channels** (`web`, `youtube`) — the tool discovers sources itself.
 - **given-source channels** (`files`) — `discover` is SKIPPED; the source is in hand. If the
   user picks `files`, ask for the path(s) — a file, a list, or a folder — before fanning out.
+- **wrapper channels** (`deep-research`) — delegate the fan-out to an external engine (here the
+  built-in `/deep-research` workflow) and run lore's verify on top. lore's adversarial verify
+  (step 5) is still mandatory — that's the value the wrapped engine lacks.
 
-### 2b. Pick depth (INTERACTIVE)
-Ask how deep to dig (use AskUserQuestion): **quick** / **standard** / **deep**. See
-`core/principles.md` → **Depth**. Depth is orthogonal to channels and sets the knobs for
-steps 4–6: agents per channel, sources per agent, verify intensity, synthesis length.
-Default = standard. quick trades breadth for speed, never rigor (hard rules always hold).
+### 2b. Pick depth (ask only if not already provided)
+**If depth is already supplied** (args or upstream), use it — do NOT re-prompt. Otherwise ask
+(use AskUserQuestion): **quick** / **standard** / **deep**. Only prompt for what's missing —
+if channels came in but depth didn't, ask just depth. See `core/principles.md` → **Depth**.
+Depth is orthogonal to channels and sets the knobs for steps 4–6 (agents per channel, sources
+per agent, verify intensity, synthesis length). Default = standard. quick trades breadth for
+speed, never rigor (hard rules always hold).
 
 ### 3. Open the arc container (process)
 - `arcs new-goal <topic-slug>` — the run.
@@ -50,15 +57,25 @@ Default = standard. quick trades breadth for speed, never rigor (hard rules alwa
 ### 4. Fan out (research)
 For each channel arc, dispatch subagent(s) using that `channels/<name>.md` **subagent-brief**
 + `core/principles.md`. Count per the chosen **depth** (principles → Depth / Fan-out
-calibration). Subagents write numbered reports → the channel arc's `workspace/`, distilled
-findings → its `output/`.
+calibration). **Subagents write numbered reports → the channel arc's `workspace/`** (and may
+return their distillate to you). The channel arc's **`output/` is written by YOU (the
+dispatcher) after that channel's subagents return** — a short distillate of the channel's
+findings. Do not expect subagents to populate `output/`; that's the dispatcher's step, so the
+close-guard finds it non-empty.
 
 ### 5. Verify (adversarial, fresh context)
 For each channel `output/`, dispatch FRESH-context reviewer subagent(s). Check every
 load-bearing claim against its cited source: **full / partial / not-supported**. Verify
 intensity per **depth**: quick = one light pass; standard = one adversarial reviewer; deep =
-≥2 perspective-diverse reviewers per load-bearing claim + a completeness critic. Write the
-verdict into the channel arc's `workspace/`. (principles → rule 8 + Depth.)
+**≥2 independent perspectives** per load-bearing claim + a completeness critic.
+
+The "≥2 perspectives" for deep can be met two ways: (a) two dedicated fresh-context reviewers,
+or (b) **independent cross-channel corroboration counts as one perspective** — a claim
+confirmed by both `web` and `youtube` from independent sources already has a second angle, so
+one dedicated adversarial reviewer on top satisfies the bar. **But a load-bearing claim that
+rests on a SINGLE source / single channel gets a dedicated 2nd reviewer regardless** — no
+cross-channel angle exists to lean on. Write verdicts into the channel arc's `workspace/`.
+(principles → rule 8 + Depth.)
 
 ### 6. Synthesize
 In the synthesis arc: input = the verified channel outputs. Write a cross-channel synthesis —
