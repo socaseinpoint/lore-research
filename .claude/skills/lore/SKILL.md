@@ -26,36 +26,60 @@ symlink targets; the skill is self-contained.
 Take the topic from `$ARGUMENTS`, or ask for it. Write a one-paragraph brief + explicit
 sub-questions. (core/principles.md → Loop.)
 
-### 2. Pick channels (ask only if not already provided)
-**If channels are already supplied** (in `$ARGUMENTS` or by the upstream caller/orchestrator),
-use them — do NOT re-prompt. Otherwise: read each `channels/*.md` `name / when-to-use` line,
-present the available channels flagging which fit this topic, and ask the user to pick 1+ (use
-AskUserQuestion). Never silently auto-decide when nothing was provided.
+### 2. Resolve the knobs (channels · depth · freshness)
+Three knobs steer the run. Resolve each from the question at Scope — don't reflexively ask, and
+don't blindly default. See `core/principles.md` → **Knob resolution** for the full model.
 
-Channels are of three kinds (a channel states which via its `discover` section):
+**Per knob, classify the source of its value:**
+- **explicit** — given in `$ARGUMENTS` or by the upstream caller/orchestrator → use as-is, NEVER
+  re-prompt. (This is the contract for agent callers — skip-if-provided.)
+- **inferable** — the question gives a clear signal → infer a confident value.
+- **ambiguous** — two values are equally defensible; the question doesn't settle it.
+
+**Decide ask-vs-infer by (confidence × cost-of-wrong).** Cost-of-wrong, which sets how eager to
+ask: `channels > freshness > depth`.
+
+- **channels** — cost HIGH (wrong channel = wrong universe of sources). Infer ONLY on a clear
+  signal; else it's ambiguous. Heuristics: a file path / "my notes/PDF/book/local KB" → `files`;
+  "in youtube / video / talk / demo" → `youtube`; "library/tool/docs/pricing/API/repo" or a plain
+  technical question → `web` (default); an explicit **cross-medium** signal ("across articles and
+  talks", "everything out there") → `web`+`youtube`. Note: bare "go deep / разберись глубоко" is a
+  **depth** signal, NOT a channel-width one — don't widen channels on it; if the topic fits both
+  web and youtube with no medium cue, channels is *ambiguous* (ask / headless-default web).
+- **depth** — cost LOW (only scales effort). Almost always infer silently; default `standard`.
+  "quick/just check/is there/yes-no/one fact" → `quick`; "deep/thorough/comprehensive/landscape"
+  → `deep`; else `standard`. (`core/principles.md` → Depth.)
+- **freshness** — cost MEDIUM. Auto-detect: "самое свежее/breaking/this week" → `bleeding`;
+  year/"latest"/"now"/"актуальн" + fast-moving domain → `fresh`; "how X works"/theory/history →
+  `evergreen`; else → `current`. Tie-breaker: when the FORM is theory-shaped ("how X works") but
+  the SUBSTANCE is a fast-moving subfield (e.g. LLM agents, JS tooling), substance wins → `current`
+  (or `fresh`), not `evergreen`. (`core/principles.md` → Freshness.) When ≠ evergreen, channels
+  gate stale candidates at discover (cheap metadata BEFORE fan-out — rule 11).
+
+Confidence test: *would a reasonable person reading the question land on the same value?* Yes →
+infer. Two values equally defensible → ambiguous.
+
+**Interaction mode:**
+- **interactive** (a human is at the prompt): batch EVERY knob that needs the user into ONE
+  `AskUserQuestion` (multi-question), with the inferred value listed first and marked
+  "(Recommended)". Never fire three separate prompts. Knobs you resolved confidently are not asked.
+- **headless / agent-invoked** (you are running as a subagent/tool, no human to ask): NEVER block.
+  Take the best inferred value per knob; for any still-ambiguous knob use the conservative default
+  (channels→`web`, depth→`standard`, freshness→`current`); and SURFACE every assumption in the
+  run's `output/` so the caller can correct and re-run. Rule of thumb: if you cannot put an
+  `AskUserQuestion` in front of a live human in this context, infer and flag — do not stall.
+
+**Always echo** the resolved knobs before fan-out, with the source of each:
+`channels=web [inferred] · depth=standard [default] · freshness=fresh [inferred]` — so the choice
+is visible in both modes and the user can intervene.
+
+Channel kinds (a channel states which via its `discover` section):
 - **search channels** (`web`, `youtube`) — the tool discovers sources itself.
-- **given-source channels** (`files`) — `discover` is SKIPPED; the source is in hand. If the
-  user picks `files`, ask for the path(s) — a file, a list, or a folder — before fanning out.
-- **wrapper channels** (`deep-research`) — delegate the fan-out to an external engine (here the
+- **given-source channels** (`files`) — `discover` is SKIPPED; the source is in hand. If `files`
+  is chosen, get the path(s) — a file, a list, or a folder — before fanning out.
+- **wrapper channels** (`deep-research`) — delegate the fan-out to an external engine (the
   built-in `/deep-research` workflow) and run lore's verify on top. lore's adversarial verify
   (step 5) is still mandatory — that's the value the wrapped engine lacks.
-
-### 2b. Pick depth (ask only if not already provided)
-**If depth is already supplied** (args or upstream), use it — do NOT re-prompt. Otherwise ask
-(use AskUserQuestion): **quick** / **standard** / **deep**. Only prompt for what's missing —
-if channels came in but depth didn't, ask just depth. See `core/principles.md` → **Depth**.
-Depth is orthogonal to channels and sets the knobs for steps 4–6 (agents per channel, sources
-per agent, verify intensity, synthesis length). Default = standard. quick trades breadth for
-speed, never rigor (hard rules always hold).
-
-### 2c. Set freshness (auto-detect at Scope; confirm only if ambiguous)
-Freshness = how current the answer must be. **Auto-detect** from the question at Scope (see
-`core/principles.md` → **Freshness**): "самое свежее"/breaking/"this week" → `bleeding`;
-year/"latest"/"now"/"актуальн" + fast-moving domain → `fresh`; "how X works"/theory/history →
-`evergreen`; else → `current` (default). **If already supplied** (args/upstream), use it — don't
-re-prompt. Surface the detected level to the user; only ask (AskUserQuestion) when the signal is
-genuinely ambiguous or the user's intent could go either way. When freshness ≠ evergreen, the
-channels apply the freshness gate at discover (cheap metadata BEFORE fan-out — rule 11).
 
 ### 3. Open the arc container (process)
 - `arcs new-goal <topic-slug>` — the run.

@@ -88,9 +88,31 @@ Freshness ≠ just a date. It's a composite actuality signal: publishedDate + vi
 - **Auto-detect at Scope** from question signals: "самое свежее"/breaking/"this week"/
   "just now" → `bleeding`; year/"latest"/"now"/"актуальн" + fast-moving domain → `fresh`;
   "how X works"/theory/history → `evergreen`; else → `current`.
+- **Form-vs-substance tie-breaker**: a theory-shaped question ("how X works") on a fast-moving
+  subfield (LLM agents, JS tooling, prices) is NOT evergreen — substance decay wins → `current`/
+  `fresh`. evergreen is only for genuinely timeless substance (math, protocols, history).
 - **User overrides** (like depth) — an explicit choice beats auto-detect.
 - **Horizon is tunable per topic at Scope, not magic**: default by level, but Scope can tighten
   it to the domain (news=weeks, tooling=12mo, theory=∞).
+
+## Knob resolution
+
+The three knobs (channels, depth, freshness) are often left unspecified — especially when `/lore`
+is called by another agent. Resolve each from the question; never reflexively ask, never blindly
+default.
+
+- **Provenance** per knob: **explicit** (in args / from the caller — use as-is, never re-prompt) ·
+  **inferable** (clear signal in the question — infer confidently) · **ambiguous** (two values
+  equally defensible).
+- **Ask vs infer = confidence × cost-of-wrong.** Cost-of-wrong ranks `channels > freshness >
+  depth`, so be most willing to ask about channels (wrong channel = wrong source universe) and
+  least about depth (only scales effort; default standard). Confidence test: would a reasonable
+  reader land on the same value?
+- **Interaction mode.** Interactive (human present): batch all uncertain knobs into ONE question,
+  inferred value first/recommended. Headless (running as a subagent/tool, no human): never block —
+  infer the best, fall back to conservative defaults (channels→web, depth→standard,
+  freshness→current) for the still-ambiguous, and surface every assumption in the run's output.
+- **Always echo** the resolved knobs (with the source of each) before fan-out, both modes.
 
 ## Decisions
 

@@ -25,6 +25,11 @@ No buried product: question and answer stay together.
 7. **Synthesize** — one cross-channel pass from verified claims only.
 8. **Promote (optional)** — lift the answer to a knowledge doc where you choose, or leave it.
 
+Knobs (channels / depth / freshness) you don't pass are **resolved from the question** — inferred
+when the signal is clear, asked only on a genuine fork, and (when `/lore` runs headless as an
+agent's tool) defaulted with the assumptions surfaced in the output. The resolved knobs are echoed
+before fan-out.
+
 ## Channels
 
 | channel | kind | what |
