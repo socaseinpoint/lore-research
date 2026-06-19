@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>lore — research that doesn't lie to you</title>
+<meta name="description" content="lore is a channel-selectable research tool for Claude Code. Pick where to search — web, youtube, your own files — fan out subagents, and adversarially re-check every claim against its source. The answer lives next to the question, in a durable arc." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=1" />
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><b>/</b>lore</a>
+    <nav class="nav-right" aria-label="Main navigation">
+      <span class="nav-links">
+        <a href="#start">start</a>
+        <a href="https://github.com/socaseinpoint/lore-research#readme" target="_blank" rel="noopener">docs</a>
+      </span>
+      <a href="https://github.com/socaseinpoint/lore-research" target="_blank" rel="noopener">github ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="mono reveal">§ 00 — channel-selectable research · verify-first · agent-ready</span>
+      <h1 class="reveal">Research that stops being a <em>confident guess</em>.</h1>
+      <p class="lead reveal">
+        <code>/lore</code> picks <b>where</b> to search — web, youtube, your own files — fans out subagents,
+        and <b>adversarially re-checks every claim against its source</b> in a fresh context. The answer lives
+        next to the question, in a durable <code>.arcs/</code> — not in a chat that scrolls away.
+      </p>
+      <div class="actions reveal">
+        <a href="#start" class="bracket bracket--primary">[ get started → ]</a>
+        <a href="https://github.com/socaseinpoint/lore-research#readme" target="_blank" rel="noopener" class="bracket">[ read the docs ]</a>
+        <a href="https://github.com/socaseinpoint/lore-research" target="_blank" rel="noopener" class="bracket">[ github ↗ ]</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE → AFTER — the wow -->
+  <section class="contrast">
+    <div class="wrap reveal">
+      <p class="band-head">§ 00b — the moment it pays off · a polished report that's quietly wrong</p>
+      <div class="contrast-grid">
+        <div class="cc">
+          <span class="tag">without lore</span>
+          <h3>A confident cited report. You can't tell what's real.</h3>
+<pre class="scene"><span class="k">you →</span> "research X"
+<span class="k">tool →</span> fans out, returns a polished report with citations
+<span class="c"># AI search miscites &gt;60% of the time; fabricated URLs are common</span>
+<span class="k">you →</span> trust it… or re-open every source by hand</pre>
+          <p class="takeaway">The report looks authoritative. A misattributed stat, a folklore number, a vendor's funded study — all dressed as fact. Self-grading never catches it.</p>
+        </div>
+        <div class="cc relief">
+          <span class="tag">with lore</span>
+          <h3>Every claim <em>re-checked</em> against its own source.</h3>
+<pre class="scene"><span class="k">you →</span> "/lore X"
+<span class="a">lore →</span> fan out → a <span class="a">fresh-context</span> reviewer re-checks each claim vs its source
+<span class="a">lore →</span> full / partial / not-supported  <span class="c"># fabrications filtered out</span>
+<span class="k">you →</span> read an answer you can actually trust</pre>
+          <p class="takeaway">An independent reviewer in a clean context — not the model that wrote it — verifies each load-bearing claim. The kind that caught real defects on the first run.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT IT IS -->
+  <section id="what">
+    <div class="wrap block">
+      <div class="head reveal">
+        <div class="num">§ 01</div>
+        <div>
+          <h2>What it is, in one breath.</h2>
+          <div class="sub">A thin dispatcher — you pick the channel and the depth, it verifies.</div>
+        </div>
+      </div>
+      <div class="body-grid reveal">
+        <div></div>
+        <div>
+          <p class="prose">
+            <code>lore</code> is a channel-selectable research tool for Claude Code. You choose <b>where</b> to
+            look and <b>how hard</b> to dig; it fans out a subagent per source, then an adversarial reviewer
+            re-checks every claim against its cited source in a <b>fresh context</b>. <em>Doing</em> the research
+            is a process — it runs as an <code>arc</code>. The <em>answer</em> is the product — it lives in that
+            arc's <code>output/</code>, right next to the question. Promotion to a durable knowledge doc is
+            optional, and you decide where it lands.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHANNELS -->
+  <section id="channels">
+    <div class="wrap block">
+      <div class="head reveal">
+        <div class="num">§ 02</div>
+        <div>
+          <h2>You pick where to search.</h2>
+          <div class="sub">Channels are declarative — and you can add your own.</div>
+        </div>
+      </div>
+      <div class="concepts reveal">
+        <div class="concept">
+          <span class="tag">web</span>
+          <h3>The open web</h3>
+          <p>exa + native search, tiered anti-bot fetch (Firecrawl stealth, Playwright). Primary sources over SEO.</p>
+        </div>
+        <div class="concept">
+          <span class="tag">youtube</span>
+          <h3>Practitioner video</h3>
+          <p>Transcripts via exa, one subagent per video. Flags visual-only content the transcript can't see.</p>
+        </div>
+        <div class="concept">
+          <span class="tag">files</span>
+          <h3>Your own material</h3>
+          <p>PDFs, books, notes, a local knowledge base. Cite <code>file:page</code>. The source is already in hand — no discovery.</p>
+        </div>
+        <div class="concept">
+          <span class="tag">deep-research</span>
+          <h3>Wrap the built-in</h3>
+          <p>Delegate web fan-out to Claude Code's built-in <code>/deep-research</code> — then run lore's verify on top, which the built-in <em>doesn't</em>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY IT MATTERS -->
+  <section id="why">
+    <div class="wrap block">
+      <div class="head reveal">
+        <div class="num">§ 03</div>
+        <div>
+          <h2>Why it matters.</h2>
+          <div class="sub">Three payoffs — one line each.</div>
+        </div>
+      </div>
+      <div class="why reveal">
+        <div class="reason">
+          <span class="rk">// verify catches what self-grading can't</span>
+          <p>A fresh-context reviewer re-checks each claim against its <em>own</em> source — full / partial / not-supported. None of the big research tools do this; their "cross-checking" is intra-run consensus, not a per-claim source re-audit. It's the feature.</p>
+        </div>
+        <div class="reason">
+          <span class="rk">// you choose where to look</span>
+          <p>Web, youtube transcripts, and your own PDFs/notes as <em>peer</em> channels — plus a depth knob: <code>quick</code> for a fact, <code>deep</code> for a broad dig with multi-perspective verification. Pick the source; pick the effort.</p>
+        </div>
+        <div class="reason">
+          <span class="rk">// the answer doesn't vanish</span>
+          <p>Research runs as an arc: question in, evidence in <code>workspace/</code>, answer in <code>output/</code>. Question and answer stay together, resumable days later. Lift it to a knowledge shelf only if you want.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- START -->
+  <section id="start">
+    <div class="wrap block">
+      <div class="head reveal">
+        <div class="num">§ 04</div>
+        <div>
+          <h2>Install once. Then just ask.</h2>
+          <div class="sub">It's a Claude Code skill — self-contained. Symlink it once; the agent drives the rest.</div>
+        </div>
+      </div>
+
+      <div class="body-grid reveal">
+        <div></div>
+        <div>
+<pre><span class="c"># 1 · clone, then symlink the self-contained skill into Claude Code</span>
+git clone https://github.com/socaseinpoint/lore-research ~/lore-research
+ln -s ~/lore-research/.claude/skills/lore ~/.claude/skills/lore</pre>
+          <p class="prose dim">
+            One symlink. The skill dir carries everything — the flow, the principles, the channels — so it works
+            from <em>any</em> project. Restart your Claude Code session so it loads. Tooling the channels expect
+            (exa, Firecrawl, Playwright MCP) is listed in the
+            <a class="inline-link" href="https://github.com/socaseinpoint/lore-research#install" target="_blank" rel="noopener">README</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="body-grid reveal" style="margin-top:2.4rem;">
+        <div></div>
+        <div>
+          <figure>
+            <div class="figcap"><span>one /lore run — the flow</span><span>start</span></div>
+<pre class="scene"><span class="k">you →</span> /lore "is there a battle-tested library for X?"
+<span class="a">lore →</span> pick channels (web · youtube · files) + depth (quick · standard · deep)
+<span class="a">lore →</span> fan out a subagent per source → cite everything
+<span class="a">lore →</span> fresh-context reviewer re-checks each claim vs its source
+<span class="a">lore →</span> synthesize the verified answer into the arc
+<span class="k">you →</span> read it · promote to a knowledge doc only if you want</pre>
+          </figure>
+          <p class="prose dim">
+            You pick where and how deep; everything after is the agent's job. The answer lands in
+            <code>.arcs/…/output/</code>, next to the question, ready to re-open any time.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HONEST FRAMING -->
+  <section id="honest">
+    <div class="wrap block">
+      <div class="head reveal">
+        <div class="num">§ 05</div>
+        <div>
+          <h2>It wraps the wheel — it doesn't reinvent it.</h2>
+          <div class="sub">Fan-out already exists. lore owns the spokes no one else has.</div>
+        </div>
+      </div>
+      <div class="body-grid reveal">
+        <div></div>
+        <div>
+          <p class="prose">
+            Plenty of tools fan out web searches and write a cited report — Claude Code even ships a built-in
+            <code>/deep-research</code>. <b>lore doesn't re-build that.</b> It can wrap it. What lore adds is the
+            layer none of them have:
+          </p>
+          <p class="prose dim">
+            <b>adversarial fresh-context verification</b> of every claim against its source · <b>your choice of
+            channel</b> across web, video and your own files · and <b>answer-in-the-arc</b> coupling, so research
+            is durable work, not a throwaway chat. Built on the <a class="inline-link" href="https://github.com/socaseinpoint/arcs" target="_blank" rel="noopener">arcs</a>
+            method; needs Claude Code. <a class="inline-link" href="https://github.com/socaseinpoint/lore-research#readme" target="_blank" rel="noopener">See the docs.</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSER -->
+  <section>
+    <div class="wrap closer reveal">
+      <h2>Ask <code>/lore</code> → pick where &amp; how deep → get an answer you can <em>trust</em>.</h2>
+      <p>Open source. A Claude Code skill — one symlink, then just talk to your agent.</p>
+      <div class="actions">
+        <a href="#start" class="bracket bracket--primary">[ get started → ]</a>
+        <a href="https://github.com/socaseinpoint/lore-research" target="_blank" rel="noopener" class="bracket">[ github ↗ ]</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span class="mono">lore · channel-selectable research with a verify layer</span>
+    <span class="foot-links">
+      <a href="https://github.com/socaseinpoint/lore-research#readme" target="_blank" rel="noopener" class="mono">docs</a>
+      <a href="https://github.com/socaseinpoint/lore-research" target="_blank" rel="noopener" class="mono">github ↗</a>
+      <a href="https://github.com/socaseinpoint/arcs" target="_blank" rel="noopener" class="mono">arcs ↗</a>
+    </span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
