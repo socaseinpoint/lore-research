@@ -48,6 +48,15 @@ Depth is orthogonal to channels and sets the knobs for steps 4–6 (agents per c
 per agent, verify intensity, synthesis length). Default = standard. quick trades breadth for
 speed, never rigor (hard rules always hold).
 
+### 2c. Set freshness (auto-detect at Scope; confirm only if ambiguous)
+Freshness = how current the answer must be. **Auto-detect** from the question at Scope (see
+`core/principles.md` → **Freshness**): "самое свежее"/breaking/"this week" → `bleeding`;
+year/"latest"/"now"/"актуальн" + fast-moving domain → `fresh`; "how X works"/theory/history →
+`evergreen`; else → `current` (default). **If already supplied** (args/upstream), use it — don't
+re-prompt. Surface the detected level to the user; only ask (AskUserQuestion) when the signal is
+genuinely ambiguous or the user's intent could go either way. When freshness ≠ evergreen, the
+channels apply the freshness gate at discover (cheap metadata BEFORE fan-out — rule 11).
+
 ### 3. Open the arc container (process)
 - `arcs new-goal <topic-slug>` — the run.
 - For each chosen channel: `arcs new-arc -g <topic-slug> <channel>`.

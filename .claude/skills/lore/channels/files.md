@@ -28,6 +28,8 @@ Per claim → a **locus** instead of a URL: `<filename>:p.<page>` (PDF) or `<fil
 - Tables/figures/equations may extract poorly — flag when a claim leans on one.
 - Big books → chunk by page range/chapter; note coverage (which pages were read).
 - Locus replaces URL: cite `file:page`, not a link.
+- Freshness gate does not apply to discovery here — the user supplies the source, so the source's
+  age is whatever the user provided (per `core/principles.md` → Freshness).
 
 ## subagent-brief
 ```

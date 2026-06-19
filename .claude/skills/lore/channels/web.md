@@ -12,6 +12,13 @@ Prefer primary sources (official docs, arXiv, GitHub repos) over SEO listicles. 
 top sources by relevance + authority; calibrate count per `core/principles.md` → Fan-out
 calibration.
 
+**Freshness gate** (per `core/principles.md` → Freshness; levels: evergreen/current/fresh/bleeding):
+at `current`/`fresh`/`bleeding`, drop sources older than the horizon BEFORE fan-out (report how
+many dropped). Do NOT trust the year in title/URL — it is not the publication date. For
+time-sensitive topics prefer dated sources over undated SEO. Metadata source: `exa web_search_exa`
+carries `publishedDate`; native `WebSearch` does not — run the date pass through exa. A source
+still undated at `fresh`/`bleeding` is held/dropped, not passed downstream undated.
+
 ## fetch
 Tiered ladder — see [`core/principles.md`](../core/principles.md) → **Tiered fetch**.
 Channel quirk: for Cloudflare/JS-only pages use
@@ -20,6 +27,7 @@ fail loudly on empty.
 
 ## extract
 Per claim → URL. For key facts → a verbatim quote. Mark each source `primary` vs `blog/SEO`.
+Capture each source's publication date when present (feeds the freshness gate and citations).
 Numbers come from official pages only (SEO blogs gave wrong figures historically).
 
 ## caveats
@@ -27,6 +35,8 @@ Numbers come from official pages only (SEO blogs gave wrong figures historically
 - JS-only SPAs return an empty shell to non-rendering fetchers.
 - News sites block hardest (~79% block at least one AI bot).
 - A real URL does not guarantee the claim is in it — verify the quote exists on the page.
+- SEO "best <year>" pages are often old content reskinned under a new year in the title — the
+  date in the headline is not the publication date.
 
 ## subagent-brief
 ```

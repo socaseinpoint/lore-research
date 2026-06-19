@@ -19,10 +19,11 @@ No buried product: question and answer stay together.
 1. **Scope** — a one-paragraph brief + explicit sub-questions.
 2. **Pick channels** (interactive) — where to search.
 3. **Pick depth** (interactive) — `quick` / `standard` / `deep`.
-4. **Fan out** — a subagent per source/channel, following that channel's brief + the hard rules.
-5. **Verify** — a fresh-context adversarial reviewer rules each claim full / partial / not-supported.
-6. **Synthesize** — one cross-channel pass from verified claims only.
-7. **Promote (optional)** — lift the answer to a knowledge doc where you choose, or leave it.
+4. **Set freshness** (auto-detected, overridable) — `evergreen` / `current` / `fresh` / `bleeding`. Stale candidates are gated out by cheap metadata **before** fan-out.
+5. **Fan out** — a subagent per source/channel, following that channel's brief + the hard rules.
+6. **Verify** — a fresh-context adversarial reviewer rules each claim full / partial / not-supported.
+7. **Synthesize** — one cross-channel pass from verified claims only.
+8. **Promote (optional)** — lift the answer to a knowledge doc where you choose, or leave it.
 
 ## Channels
 
@@ -40,6 +41,15 @@ Add a channel by dropping a `channels/<name>.md` that satisfies `core/channel-co
 `quick` (yes/no, a fact) · `standard` (default) · `deep` (broad — multi-source, perspective-diverse
 multi-vote verify, completeness critic). Depth scales fan-out, sources, and verification — never rigor.
 
+## Freshness
+
+How current the answer must be — a third knob, orthogonal to channels and depth. Auto-detected from
+the question at scope, overridable. `evergreen` (timeless — age ignored) · `current` (default, soft
+~24mo) · `fresh` (`latest`/`2025`/fast-moving — hard ~12mo) · `bleeding` (newest, days–weeks). When
+freshness ≠ evergreen, channels **gate stale candidates with cheap metadata (publishedDate,
+view-velocity) before fan-out** — never burning subagent tokens on stale sources, never trusting the
+year in a title over its real publish date.
+
 ## Layout
 
 The skill is **self-contained** — everything lives under one directory, so symlinking it
@@ -47,9 +57,9 @@ carries the whole tool:
 
 ```
 .claude/skills/lore/
-  SKILL.md                # the /lore dispatcher (flow: scope → channels → depth → fan-out → verify → synth)
+  SKILL.md                # the /lore dispatcher (flow: scope → channels → depth → freshness → fan-out → verify → synth)
   core/
-    principles.md         # the loop, fan-out calibration, tiered fetch, 10 hard rules, depth
+    principles.md         # the loop, fan-out calibration, tiered fetch, 11 hard rules, depth, freshness
     channel-contract.md   # the schema every channel must satisfy
   channels/
     web.md  youtube.md  files.md  deep-research.md  _template.md

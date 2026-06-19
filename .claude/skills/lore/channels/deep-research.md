@@ -15,6 +15,8 @@ channels for non-web). Good as the web arm of a multi-channel run.
 Delegated. Hand the sub-question(s) to the built-in `/deep-research` workflow (it fans web
 searches across angles, cross-checks, votes, filters, returns a cited report — up to 16
 concurrent / 1000 agents per run). lore does not pick sources here; the workflow does.
+**Freshness** (per `core/principles.md` → Freshness) is passed through to the embedded engine as
+intent; lore's step-5 verify pass still applies on top.
 
 ## fetch
 Delegated to the workflow. lore does not run the tiered ladder for this channel — `/deep-research`

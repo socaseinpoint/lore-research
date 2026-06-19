@@ -10,7 +10,8 @@ the user can pick where to search.
 
 ## discover
 How to find candidate sources in this channel (which search tools, how to dedupe, how to
-rank, how many to keep).
+rank, how many to keep). Each channel MUST state how it applies the freshness gate (per
+`core/principles.md` → Freshness) — or explicitly that age is not applicable (e.g. files).
 
 ## fetch
 How to get the actual content. Reference the tiered ladder in

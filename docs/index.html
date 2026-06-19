@@ -79,7 +79,7 @@
         <div class="num">§ 01</div>
         <div>
           <h2>What it is, in one breath.</h2>
-          <div class="sub">A thin dispatcher — you pick the channel and the depth, it verifies.</div>
+          <div class="sub">A thin dispatcher — you pick the channel, the depth, and the freshness; it verifies.</div>
         </div>
       </div>
       <div class="body-grid reveal">
@@ -87,7 +87,7 @@
         <div>
           <p class="prose">
             <code>lore</code> is a channel-selectable research tool for Claude Code. You choose <b>where</b> to
-            look and <b>how hard</b> to dig; it fans out a subagent per source, then an adversarial reviewer
+            look, <b>how hard</b> to dig, and <b>how current</b> to keep it; it fans out a subagent per source, then an adversarial reviewer
             re-checks every claim against its cited source in a <b>fresh context</b>. <em>Doing</em> the research
             is a process — it runs as an <code>arc</code>. The <em>answer</em> is the product — it lives in that
             arc's <code>output/</code>, right next to the question. Promotion to a durable knowledge doc is
@@ -150,7 +150,7 @@
         </div>
         <div class="reason">
           <span class="rk">// you choose where to look</span>
-          <p>Web, youtube transcripts, and your own PDFs/notes as <em>peer</em> channels — plus a depth knob: <code>quick</code> for a fact, <code>deep</code> for a broad dig with multi-perspective verification. Pick the source; pick the effort.</p>
+          <p>Web, youtube transcripts, and your own PDFs/notes as <em>peer</em> channels — plus two knobs: <em>depth</em> (<code>quick</code> for a fact, <code>deep</code> for a broad multi-perspective dig) and <em>freshness</em> (<code>evergreen</code> → <code>bleeding</code>), which gates stale sources out by date <em>before</em> fan-out. Pick the source; pick the effort; pick how current.</p>
         </div>
         <div class="reason">
           <span class="rk">// the answer doesn't vanish</span>
@@ -192,7 +192,7 @@ ln -s ~/lore-research/.claude/skills/lore ~/.claude/skills/lore</pre>
           <figure>
             <div class="figcap"><span>one /lore run — the flow</span><span>start</span></div>
 <pre class="scene"><span class="k">you →</span> /lore "is there a battle-tested library for X?"
-<span class="a">lore →</span> pick channels (web · youtube · files) + depth (quick · standard · deep)
+<span class="a">lore →</span> pick channels (web · youtube · files) + depth (quick · standard · deep) + freshness (evergreen → bleeding)
 <span class="a">lore →</span> fan out a subagent per source → cite everything
 <span class="a">lore →</span> fresh-context reviewer re-checks each claim vs its source
 <span class="a">lore →</span> synthesize the verified answer into the arc

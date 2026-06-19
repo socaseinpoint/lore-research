@@ -9,9 +9,18 @@ production". Complements `web`; weak for exact numbers/specs (use web for those)
 
 ## discover
 Run BOTH in one message: `WebSearch(allowed_domains:["youtube.com"])` AND `exa web_search_exa`.
-Dedupe by video id. Keep top 5–6 by relevance + views + recency. Prefer full videos over
-Shorts. Channel-scoped discovery: Firecrawl scrape of `youtube.com/@channel/search?query=...`
-(renders the JS list).
+Dedupe by video id. Prefer full videos over Shorts. Channel-scoped discovery: Firecrawl scrape
+of `youtube.com/@channel/search?query=...` (renders the JS list).
+
+**Freshness gate** (per `core/principles.md` → Freshness; levels: evergreen/current/fresh/bleeding):
+cheap metadata pass for `publishedDate` BEFORE fan-out — at `current`/`fresh`/`bleeding`, drop
+candidates older than the horizon (report how many dropped). At `fresh`/`bleeding` apply YouTube's
+date filter (this year / this month). Rank by **view-velocity** (views ÷ age in months), NOT raw
+views. Confirm any year-in-title against `publishedDate`; mismatch → flag. Keep top 5–6 of survivors.
+Metadata source: `exa web_search_exa` carries `publishedDate`+views; `WebSearch` returns title+URL
+ONLY (no dates) — so run the metadata pass through exa. A candidate still undated at `fresh`/
+`bleeding` is HELD/DROPPED, never passed downstream undated (an undatable candidate FAILS the gate,
+it does not bypass it).
 
 ## fetch
 Transcript via `exa web_fetch_exa(url)` ONLY — returns transcript + metadata
@@ -26,6 +35,9 @@ views. ASR quotes may be rough — keep them short.
 - A transcript is SPOKEN WORDS ONLY — on-screen code/demos/slides are invisible. **Flag
   visual-heavy videos as incomplete.**
 - Flag signal-vs-hype (affiliates/sponsors/clickbait).
+- **Views-trap:** an old video accumulates views over time and looks more authoritative than it
+  is — rank by view-velocity, not raw views.
+- **The year in a title lies** — it is not the `publishedDate`; a "2025" title can be a 2022 upload.
 - On empty/failed fetch: SAY SO and skip; never invent.
 
 ## subagent-brief
